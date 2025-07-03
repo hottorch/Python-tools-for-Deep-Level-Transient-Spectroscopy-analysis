@@ -1,24 +1,37 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul  3 13:12:30 2025
+# Q-DLTS Signal Processing Script
+# --------------------------------
+# This script processes current transients to compute Q-DLTS (charge-based Deep Level Transient Spectroscopy) signals.
+# Developed by: hottorch
+# Created on: July 3, 2025
 
-@author: 81412
-"""
 import numpy as np
 
-def Q_DLTS(Temp, t, I, ratio=None, pts=None, baseline=None, SNR=False):
+def q_dlts(Temp, t, I, ratio=None, pts=None, baseline=None, SNR=False):
     """
-    Interpret current transient to Q-DLTS signalgnal
-    
-    Argument list:
-        t: time in 's'
-        I: Current in 'A'
-        ratio: product of t2/t1, default ratio is '2'
-        pts: how many data points you want in the output, 
-        baseline: the value that the current transient shoud be offset to make sure it decays to 0
-    
-    Returns:
-        A 2 columns array, col_0 is the time constant in 'Second', col_1 is the Q-DLTS signal (delta Q) in 'Coulomb'
+    Calculate the Q-DLTS signal from a current transient.
+
+    Parameters
+    ----------
+    Temp : float
+        Temperature at which the measurement is made (for labeling only).
+    t : np.ndarray
+        Time array (in seconds).
+    I : np.ndarray
+        Current array (in amperes).
+    ratio : float, optional
+        Ratio t2/t1 for the integration window. Default is 2.
+    pts : int, optional
+        Number of Q-DLTS points to generate. Default is 50.
+    baseline : float, optional
+        Manual baseline value to subtract from I. If None, uses mean of last 1% of data.
+    SNR : bool, optional
+        Currently unused. Reserved for future signal-to-noise calculations.
+
+    Returns
+    -------
+    np.ndarray
+        2D array where each row contains:
+        [Temperature, Tau (s), delta_Q (C), t1, t2, t_start, t_end, index_base]
     """
     Q_DLTS_sig = []
     print ('\n-------------------------------')
@@ -63,4 +76,4 @@ def Q_DLTS(Temp, t, I, ratio=None, pts=None, baseline=None, SNR=False):
         tau = (t_sub[-1] - t_sub[0]) / np.log(t_sub[-1] / t_sub[0])  # In second
         Q_DLTS_sig.append([Temp, tau, delta_Q, t1, t2,t_sub[0], t_sub[-1], index_base])
         
-    return np.array(Q_DLTS_sig)  # Construct a 2 columns array
+    return np.array(q_dlts_sig)  # Construct a 2 columns array
