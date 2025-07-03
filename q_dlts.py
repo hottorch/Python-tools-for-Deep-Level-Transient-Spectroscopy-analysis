@@ -6,7 +6,7 @@
 
 import numpy as np
 
-def q_dlts(Temp, t, I, ratio=None, pts=None, baseline=None, SNR=False):
+def q_dlts(Temp, t, I, ratio=None, pts=None, baseline=None):
     """
     Calculate the Q-DLTS signal from a current transient.
 
@@ -32,7 +32,13 @@ def q_dlts(Temp, t, I, ratio=None, pts=None, baseline=None, SNR=False):
     np.ndarray
         2D array where each row contains:
         [Temperature, Tau (s), delta_Q (C), t1, t2, t_start, t_end, index_base]
+    
+    t1, t2:
+        Nominal start and end times (in seconds) of the integration window, where t2 = ratio × t1.
+    t_start, t_end:
+        Actual start and end times from the time array closest to t1 and t2, used for integration.
     """
+    
     Q_DLTS_sig = []
     print ('\n-------------------------------')
     if ratio is None:
@@ -76,4 +82,4 @@ def q_dlts(Temp, t, I, ratio=None, pts=None, baseline=None, SNR=False):
         tau = (t_sub[-1] - t_sub[0]) / np.log(t_sub[-1] / t_sub[0])  # In second
         Q_DLTS_sig.append([Temp, tau, delta_Q, t1, t2,t_sub[0], t_sub[-1], index_base])
         
-    return np.array(q_dlts_sig)  # Construct a 2 columns array
+    return np.array(Q_DLTS_sig)  # Construct a 2 columns array
